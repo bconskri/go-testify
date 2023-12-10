@@ -1,6 +1,7 @@
 package cafehandler
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -12,7 +13,9 @@ import (
 )
 
 func TestMainHandlerWhenRequestCorrect(t *testing.T) {
-	req := httptest.NewRequest(http.MethodGet, "/cafe?city=moscow&count=2", nil)
+	city := "moscow"
+	count := 2
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/cafe?city=%s&count=%d", city, count), nil)
 
 	responseRecorder := httptest.NewRecorder()
 	handler := http.HandlerFunc(mainHandle)
@@ -29,7 +32,9 @@ func TestMainHandlerWhenRequestCorrect(t *testing.T) {
 }
 
 func TestMainHandlerWhenCityNotSupport(t *testing.T) {
-	req := httptest.NewRequest(http.MethodGet, "/cafe?city=orenburg&count=1", nil)
+	city := "AgurdJ2Bq9S6"
+	count := 1
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/cafe?city=%s&count=%d", city, count), nil)
 
 	responseRecorder := httptest.NewRecorder()
 	handler := http.HandlerFunc(mainHandle)
@@ -46,8 +51,10 @@ func TestMainHandlerWhenCityNotSupport(t *testing.T) {
 }
 
 func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
-	totalCount := 4
-	req := httptest.NewRequest(http.MethodGet, "/cafe?city=moscow&count=5", nil)
+	city := "moscow"
+	count := 5
+	totalCount := len(cafeList[city]) // 4 это было в прекоде)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/cafe?city=%s&count=%d", city, count), nil)
 
 	responseRecorder := httptest.NewRecorder()
 	handler := http.HandlerFunc(mainHandle)
